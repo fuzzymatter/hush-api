@@ -1,0 +1,27 @@
+version: '3.6'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - /data/postgres:/data/postgres
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+
+  pgadmin:
+    links:
+      - postgres
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    ports:
+      - '5050:80'
+    restart: unless-stopped
