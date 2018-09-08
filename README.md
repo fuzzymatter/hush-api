@@ -4,6 +4,8 @@ Hush service api project.
 
 ## Development
 
+Copy `.sample.env` to `.env`.
+
 This project uses Postgres and pgAdmin4. To start them run:
 
 ```
