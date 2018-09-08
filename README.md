@@ -22,3 +22,5 @@ When adding the local server for the first time use:
 - connection: `postgres`
 - user: `postgres`
 - password: `postgres`
+
+You should also create a new database called `hush`. This is the default database used.
