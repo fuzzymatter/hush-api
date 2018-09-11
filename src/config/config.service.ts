@@ -11,7 +11,6 @@ export class ConfigService {
 
   constructor(filePath: string) {
     const config = dotenv.parse(fs.readFileSync(filePath));
-    console.log(config); // tslint:disable-line
     this.envConfig = this.validateInput(config);
   }
 
