@@ -4,6 +4,8 @@ Hush service api project.
 
 ## Development
 
+Copy `.sample.env` to `.env`.
+
 This project uses Postgres and pgAdmin4. To start them run:
 
 ```
@@ -22,3 +24,5 @@ When adding the local server for the first time use:
 - connection: `postgres`
 - user: `postgres`
 - password: `postgres`
+
+You should also create a new database called `hush`. This is the default database used.
