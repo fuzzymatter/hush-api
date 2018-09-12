@@ -1,11 +1,13 @@
 import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import * as fs from 'fs';
+import { Injectable } from '@nestjs/common';
 
 export interface EnvConfig {
   [key: string]: string;
 }
 
+@Injectable()
 export class ConfigService {
   private readonly envConfig: EnvConfig;
 
@@ -16,6 +18,7 @@ export class ConfigService {
 
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
+      SENDGRID_API_KEY: Joi.string().default('sendgrid_api_key'),
       TYPEORM_CONNECTION: Joi.string().default('postgres'),
       TYPEORM_HOST: Joi.string().default('localhosty'),
       TYPEORM_USERNAME: Joi.string().default('postgres'),
