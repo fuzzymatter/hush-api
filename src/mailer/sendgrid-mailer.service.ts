@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import SendGrid from '@sendgrid/mail';
-import { SendMailSettings } from './mailer.service';
+import * as SendGrid from '@sendgrid/mail';
+import { MailData } from '@sendgrid/helpers/classes/mail';
 
 @Injectable()
 export class SendGridMailer {
-  send(mailSettings: SendMailSettings) {
-    return SendGrid.send(mailSettings);
+  send(data: MailData) {
+    return SendGrid.send(data);
   }
 
   setApiKey(key: string): void {

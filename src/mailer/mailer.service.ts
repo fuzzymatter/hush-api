@@ -1,27 +1,62 @@
 import { Injectable } from '@nestjs/common';
+import {
+  validate,
+  IsEmail,
+  Length,
+  IsOptional,
+  ValidationError,
+} from 'class-validator';
 import { ConfigService } from '../config/config.service';
 import { SendGridMailer } from './sendgrid-mailer.service';
 
-export interface SendMailSettings {
-  to: string;
-  from: string;
-  subject: string;
-  text: string;
-  html: string;
+export class MessageData {
+  @IsEmail()
+  readonly to: string;
+
+  @IsEmail()
+  readonly from: string;
+
+  @Length(10, 255)
+  readonly subject: string;
+
+  @Length(10)
+  readonly text: string;
+
+  @Length(10)
+  @IsOptional()
+  readonly html?: string;
+
+  constructor(data: MessageData) {
+    this.to = data.to;
+    this.from = data.from;
+    this.subject = data.subject;
+    this.text = data.text;
+    this.html = data.html;
+  }
 }
 
 @Injectable()
 export class MailerService {
   constructor(
     readonly configService: ConfigService,
-    private readonly mailer: SendGridMailer,
+    private readonly sendGridMailer: SendGridMailer,
   ) {
-    this.mailer.setApiKey(configService.get('SENDGRID_API_KEY'));
+    this.sendGridMailer.setApiKey(configService.get('SENDGRID_API_KEY'));
   }
 
-  async send(messageSettings: SendMailSettings) {
-    await this.mailer.send(messageSettings);
+  async send(messageData: MessageData) {
+    await validate(new MessageData(messageData)).then(errors => {
+      if (errors.length > 0) throw errors;
+    });
 
-    return true;
+    return this.sendGridMailer
+      .send(messageData)
+      .then(() => ({ success: true }))
+      .catch(error => {
+        const { message, code } = error;
+
+        // TODO: Logging + Rollbar
+        throw new Error('An error occurred sending email.');
+      });
   }
 }
