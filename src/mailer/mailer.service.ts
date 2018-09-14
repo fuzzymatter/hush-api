@@ -41,7 +41,7 @@ export class MailerService {
     readonly configService: ConfigService,
     private readonly sendGridMailer: SendGridMailer,
   ) {
-    this.sendGridMailer.setApiKey(configService.get('SENDGRID_API_KEY'));
+    this.sendGridMailer.setApiKey(configService.env.SENDGRID_API_KEY);
   }
 
   async send(messageData: MessageData) {
