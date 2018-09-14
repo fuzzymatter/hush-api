@@ -17,7 +17,7 @@ This will launch containers in the background.
 To access pgAdmin4 visit `http://localhost:5050`. To login use:
 
 - email: `pgadmin4@pgadmin.org`
-- password: `admin`.
+- password: `admin`
 
 When adding the local server for the first time use:
 
