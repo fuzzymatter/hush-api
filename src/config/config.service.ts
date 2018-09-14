@@ -19,17 +19,17 @@ export class ConfigService {
   private validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       SENDGRID_API_KEY: Joi.string().default('sendgrid_api_key'),
-      TYPEORM_CONNECTION: Joi.string().default('postgres'),
-      TYPEORM_HOST: Joi.string().default('localhosty'),
+      TYPEORM_CONNECTION: Joi.string()
+        .only(['postgres'])
+        .default('postgres'),
+      TYPEORM_HOST: Joi.string().default('localhost'),
       TYPEORM_USERNAME: Joi.string().default('postgres'),
       TYPEORM_PASSWORD: Joi.string().default('postgres'),
       TYPEORM_DATABASE: Joi.string().default('hush'),
       TYPEORM_PORT: Joi.number().default(5432),
       TYPEORM_SYNCHRONIZE: Joi.boolean().default(true),
       TYPEORM_LOGGING: Joi.boolean().default(true),
-      TYPEORM_ENTITIES: Joi.string().default(
-        'entity/.*js,modules/**/entity/.*js',
-      ),
+      TYPEORM_ENTITIES: Joi.string().default('src/**/*.entity{.ts,.js}'),
       NODE_ENV: Joi.string()
         .valid(['development', 'production', 'test'])
         .default('development'),

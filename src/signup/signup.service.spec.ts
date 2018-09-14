@@ -2,21 +2,32 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Chance } from 'chance';
 import { SignupService } from './signup.service';
 import { MailerService, MessageData } from '../mailer/mailer.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Signup, Status } from './signup.entity';
 
 const chance = new Chance();
 
 describe('SignupService', () => {
   let service: SignupService;
+
   const mailerMock = {
     async send(messageData: MessageData) {
       return { success: true };
     },
   };
 
+  const signupRepositoryMock = {
+    async save(signup: Signup) {},
+  };
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SignupService,
+        {
+          provide: getRepositoryToken(Signup),
+          useValue: signupRepositoryMock,
+        },
         {
           provide: MailerService,
           useValue: mailerMock,
@@ -36,10 +47,15 @@ describe('SignupService', () => {
   });
 
   it('should return a new signup', async () => {
+    const signup = new Signup();
+    signup.email = chance.email();
+    signup.name = chance.name();
+
     await expect(
-      service.create(chance.email(), chance.name()),
+      service.create(signup.email, signup.name),
     ).resolves.toMatchObject({
-      id: expect.stringMatching(/.{20,}/),
+      ...signup,
+      status: Status.Active,
     });
   });
 
