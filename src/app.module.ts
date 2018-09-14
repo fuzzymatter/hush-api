@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SignupsModule } from './signup/signup.module';
 import { MailerModule } from './mailer/mailer.module';
-import { ConfigModule } from 'config/config.module';
-import { ConfigService } from 'config/config.service';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
