@@ -5,8 +5,11 @@ import { Connection, createConnection } from 'typeorm';
 import { Chance } from 'chance';
 import { AppModule } from './../src/app.module';
 import { MailerService } from '../src/mailer/mailer.service';
+import { ConfigService } from '../src/config/config.service';
+import { async } from 'rxjs/internal/scheduler/async';
 
 const chance = new Chance();
+const configService = new ConfigService('.env');
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -15,14 +18,14 @@ describe('AppController (e2e)', () => {
 
   beforeAll(async () => {
     connection = await createConnection({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
+      type: configService.env.TYPEORM_CONNECTION,
+      host: configService.env.TYPEORM_HOST,
+      port: configService.env.TYPEORM_PORT,
+      username: configService.env.TYPEORM_USERNAME,
+      password: configService.env.TYPEORM_PASSWORD,
       database: 'hush_test',
-      entities: ['src/**/**.entity.ts', 'src/**/**.entity.js'],
-      synchronize: true,
+      entities: configService.env.TYPEORM_ENTITIES,
+      synchronize: configService.env.TYPEORM_SYNCHRONIZE,
     });
 
     const moduleFixture = await Test.createTestingModule({
@@ -38,8 +41,11 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  afterAll(async () => {
+  beforeAll(async () => {
     await connection.synchronize(true);
+  });
+
+  afterAll(async () => {
     await connection.close();
     await app.close();
   });
