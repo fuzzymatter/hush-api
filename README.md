@@ -25,4 +25,4 @@ When adding the local server for the first time use:
 - user: `postgres`
 - password: `postgres`
 
-You should also create a new database called `hush`. This is the default database used.
+To create the application databases run `yarn scripts:db:init`.
