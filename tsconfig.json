@@ -13,6 +13,6 @@
     "outDir": "./dist",
     "baseUrl": "./src"
   },
-  "include": ["src/**/*", "ormconfig.js"],
+  "include": ["src/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

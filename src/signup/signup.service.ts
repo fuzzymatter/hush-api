@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as shortid from 'shortid';
+import { DateTime } from 'luxon';
 import { MailerService } from '../mailer/mailer.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -30,7 +31,11 @@ export class SignupService {
     signup.email = email;
     signup.name = name;
     signup.status = Status.Active;
-    signup.expires_at = new Date();
+    signup.created_at = new Date();
+    signup.updated_at = new Date();
+    signup.expires_at = DateTime.local()
+      .plus({ minutes: 5 })
+      .toJSDate();
 
     await this.signupRepository.save(signup);
 

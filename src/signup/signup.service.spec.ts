@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { DateTime } from 'luxon';
 import { Chance } from 'chance';
 import { SignupService } from './signup.service';
 import { MailerService, MessageData } from '../mailer/mailer.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { Signup, Status } from './signup.entity';
 
 const chance = new Chance();
@@ -47,16 +48,22 @@ describe('SignupService', () => {
   });
 
   it('should return a new signup', async () => {
-    const signup = new Signup();
-    signup.email = chance.email();
-    signup.name = chance.name();
+    const email = chance.email();
+    const name = chance.name();
 
-    await expect(
-      service.create(signup.email, signup.name),
-    ).resolves.toMatchObject({
-      ...signup,
+    const signup = await service.create(email, name);
+
+    expect(signup).toMatchObject({
+      email,
+      name,
       status: Status.Active,
     });
+
+    expect(
+      DateTime.fromJSDate(signup.expires_at)
+        .diff(DateTime.fromJSDate(signup.created_at), 'minutes')
+        .toObject().minutes,
+    ).toBeCloseTo(5);
   });
 
   it('should throw an exception if the mailer fails', async () => {

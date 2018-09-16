@@ -1,12 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { InternalServerErrorException } from '@nestjs/common';
 import * as cuid from 'cuid';
 import { Chance } from 'chance';
 import { SignupController } from './signup.controller';
 import { SignupService } from './signup.service';
-import {
-  InternalServerErrorException,
-  BadRequestException,
-} from '@nestjs/common';
 
 const chance = new Chance();
 
