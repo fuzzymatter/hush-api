@@ -16,7 +16,7 @@ async function main() {
   );
 
   if (dbs.length === 2) {
-    console.log('"hush" "hush_test" databases already exist.'); // tslint:disable-line
+    console.log('"hush" and "hush_test" databases already exist.'); // tslint:disable-line
   }
 
   const hush = dbs.find(db => db.datname === 'hush');

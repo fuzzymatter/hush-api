@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { DateTime } from 'luxon';
 
 export enum Status {
   Active = 'active',
@@ -29,12 +30,30 @@ export class Signup {
   @Column({ enum: Status })
   status: string;
 
-  @Column()
-  expires_at: Date;
+  @Column({ type: 'timestamp with time zone', name: 'expires_at' })
+  expiresAt: Date;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({
+    type: 'timestamp with time zone',
+    name: 'created_at',
+  })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'timestamp with time zone', name: 'updated_at' })
+  updatedAt: Date;
+
+  get isExpired(): boolean {
+    return this.expiresAt < new Date();
+  }
+
+  get timeRemaining() {
+    const diff = DateTime.fromJSDate(this.expiresAt)
+      .diff(DateTime.fromJSDate(new Date()), ['minutes', 'seconds'])
+      .toObject();
+
+    return {
+      minutes: diff.minutes,
+      seconds: diff.seconds,
+    };
+  }
 }

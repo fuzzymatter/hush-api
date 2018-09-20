@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  validate,
-  IsEmail,
-  Length,
-  IsOptional,
-  ValidationError,
-} from 'class-validator';
+import { validate, IsEmail, Length, IsOptional } from 'class-validator';
 import { ConfigService } from '../config/config.service';
 import { SendGridMailer } from './sendgrid-mailer.service';
 

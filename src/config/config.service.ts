@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv';
-import * as dotenvParseVariables from 'dotenv-parse-variables';
-import * as fs from 'fs';
+import dotenv from 'dotenv';
+import dotenvParseVariables from 'dotenv-parse-variables';
+import fs from 'fs';
 import { Injectable } from '@nestjs/common';
 import {
   IsString,

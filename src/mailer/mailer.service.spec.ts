@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Provider } from '@nestjs/common';
 import { Chance } from 'chance';
-import { MailerService, MessageData } from './mailer.service';
-import { ConfigModule } from '../config/config.module';
-import { SendGridMailer } from './sendgrid-mailer.service';
 import { Response } from 'request';
 import { ResponseError } from '@sendgrid/helpers/classes';
 import { ValidationError } from 'class-validator';
+import { MailerService, MessageData } from './mailer.service';
+import { ConfigModule } from '../config/config.module';
+import { SendGridMailer } from './sendgrid-mailer.service';
 
 const chance = new Chance();
 
@@ -42,7 +42,7 @@ describe('MailerService', () => {
     service = module.get<MailerService>(MailerService);
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.resetAllMocks();
   });
 

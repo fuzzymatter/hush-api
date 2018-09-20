@@ -4,10 +4,12 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
-  InternalServerErrorException,
+  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { CreateSignupDto } from './dto/create-signup.dto';
 import { SignupService } from './signup.service';
+import { Response } from 'express';
 
 @Controller('signups')
 export class SignupController {
@@ -15,14 +17,14 @@ export class SignupController {
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
-  create(@Body() createSignupDto: CreateSignupDto) {
+  create(@Res() res: Response, @Body() createSignupDto: CreateSignupDto) {
     return this.signupService
       .create(createSignupDto.email, createSignupDto.name)
-      .then(signup => ({
-        id: signup.id,
-      }))
-      .catch(() => {
-        throw new InternalServerErrorException('Error creating signup.');
+      .then(({ isNew, signup }) => {
+        res.status(isNew ? HttpStatus.CREATED : HttpStatus.OK).json({
+          id: signup.id,
+          timeRemaining: signup.timeRemaining,
+        });
       });
   }
 }

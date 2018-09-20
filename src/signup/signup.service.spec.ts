@@ -17,9 +17,14 @@ describe('SignupService', () => {
     },
   };
 
-  const signupRepositoryMock = {
-    async save(signup: Signup) {},
-  };
+  const createMockSignupRepository = jest.fn(() => ({
+    createQueryBuilder: () => ({
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockReturnValue(null),
+    }),
+
+    save: jest.fn().mockResolvedValue(true),
+  }));
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,7 +32,7 @@ describe('SignupService', () => {
         SignupService,
         {
           provide: getRepositoryToken(Signup),
-          useValue: signupRepositoryMock,
+          useValue: createMockSignupRepository(),
         },
         {
           provide: MailerService,
@@ -51,7 +56,9 @@ describe('SignupService', () => {
     const email = chance.email();
     const name = chance.name();
 
-    const signup = await service.create(email, name);
+    const { isNew, signup } = await service.create(email, name);
+
+    expect(isNew).toBe(true);
 
     expect(signup).toMatchObject({
       email,
@@ -60,8 +67,8 @@ describe('SignupService', () => {
     });
 
     expect(
-      DateTime.fromJSDate(signup.expires_at)
-        .diff(DateTime.fromJSDate(signup.created_at), 'minutes')
+      DateTime.fromJSDate(signup.expiresAt)
+        .diff(DateTime.fromJSDate(new Date()), 'minutes')
         .toObject().minutes,
     ).toBeCloseTo(5);
   });
@@ -69,9 +76,7 @@ describe('SignupService', () => {
   it('should throw an exception if the mailer fails', async () => {
     jest
       .spyOn(mailerMock, 'send')
-      .mockImplementation(async () =>
-        Promise.reject(new Error('An error occurred sending email.')),
-      );
+      .mockRejectedValue(new Error('An error occurred sending email.'));
 
     await expect(
       service.create(chance.email(), chance.name()),

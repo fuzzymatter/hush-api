@@ -26,3 +26,28 @@ When adding the local server for the first time use:
 - password: `postgres`
 
 To create the application databases run `yarn scripts:db:init`.
+
+## Routes
+
+`POST /signups` - Create new signup
+
+Expires in 5 minutes.
+
+Request body
+
+```javascript
+{
+  email: string,
+  name: string,
+}
+```
+
+`POST /signups/:id/verify` - Complete sign up with verification code
+
+```javascript
+{
+  code: string,
+  publicKey: string,
+  privateKey: string,
+}
+```

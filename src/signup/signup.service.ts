@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as shortid from 'shortid';
-import { DateTime } from 'luxon';
+import shortid from 'shortid';
 import { MailerService } from '../mailer/mailer.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,7 +13,19 @@ export class SignupService {
     private readonly mailer: MailerService,
   ) {}
 
-  async create(email: string, name: string): Promise<Signup> {
+  async create(
+    email: string,
+    name: string,
+  ): Promise<{ isNew: boolean; signup: Signup }> {
+    const existing = await this.signupRepository
+      .createQueryBuilder('signup')
+      .where('signup.expires_at > now() and email = :email', { email })
+      .getOne();
+
+    if (existing) {
+      return { isNew: false, signup: existing };
+    }
+
     const text = `Hello ${name},\n\nHere is your signup verification code: ${shortid()}.`;
     const html = `Hello ${name},\n\nHere is your signup verification code: <strong>${shortid()}</strong>.`;
 
@@ -26,19 +37,20 @@ export class SignupService {
       html,
     });
 
+    const expiresAt = new Date();
+    expiresAt.setUTCMinutes(expiresAt.getUTCMinutes() + 5);
+
     const signup = new Signup();
     signup.code = shortid();
     signup.email = email;
     signup.name = name;
     signup.status = Status.Active;
-    signup.created_at = new Date();
-    signup.updated_at = new Date();
-    signup.expires_at = DateTime.local()
-      .plus({ minutes: 5 })
-      .toJSDate();
+    signup.createdAt = new Date();
+    signup.updatedAt = new Date();
+    signup.expiresAt = expiresAt;
 
     await this.signupRepository.save(signup);
 
-    return signup;
+    return { isNew: true, signup };
   }
 }
