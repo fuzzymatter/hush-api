@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import shortid from 'shortid';
 import { MailerService } from '../mailer/mailer.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,17 +16,27 @@ export class SignupService {
     email: string,
     name: string,
   ): Promise<{ isNew: boolean; signup: Signup }> {
-    const existing = await this.signupRepository
-      .createQueryBuilder('signup')
-      .where('signup.expires_at > now() and email = :email', { email })
-      .getOne();
+    const verified = await this.findVerified(email);
+
+    if (verified) {
+      return { isNew: false, signup: verified };
+    }
+
+    const existing = await this.findExistingActive(email);
 
     if (existing) {
       return { isNew: false, signup: existing };
     }
 
-    const text = `Hello ${name},\n\nHere is your signup verification code: ${shortid()}.`;
-    const html = `Hello ${name},\n\nHere is your signup verification code: <strong>${shortid()}</strong>.`;
+    const signup = new Signup(email, name);
+    const text = `Hello ${
+      signup.name
+    },\n\nHere is your signup verification code: ${signup.code}.`;
+    const html = `Hello ${
+      signup.name
+    },\n\nHere is your signup verification code: <strong>${
+      signup.code
+    }</strong>.`;
 
     await this.mailer.send({
       to: email,
@@ -37,20 +46,25 @@ export class SignupService {
       html,
     });
 
-    const expiresAt = new Date();
-    expiresAt.setUTCMinutes(expiresAt.getUTCMinutes() + 5);
-
-    const signup = new Signup();
-    signup.code = shortid();
-    signup.email = email;
-    signup.name = name;
-    signup.status = Status.Active;
-    signup.createdAt = new Date();
-    signup.updatedAt = new Date();
-    signup.expiresAt = expiresAt;
-
     await this.signupRepository.save(signup);
 
     return { isNew: true, signup };
+  }
+
+  findVerified(email) {
+    return this.signupRepository
+      .createQueryBuilder('signup')
+      .where('signup.email = :email AND signup.status = :status', {
+        email,
+        status: Status.Verified,
+      })
+      .getOne();
+  }
+
+  findExistingActive(email) {
+    return this.signupRepository
+      .createQueryBuilder('signup')
+      .where('signup.expires_at > now() AND signup.email = :email', { email })
+      .getOne();
   }
 }

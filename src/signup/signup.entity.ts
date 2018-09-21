@@ -6,15 +6,28 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { DateTime } from 'luxon';
+import shortid from 'shortid';
 
 export enum Status {
   Active = 'active',
   Expired = 'expired',
-  Complete = 'complete',
+  Verified = 'verified',
 }
 
 @Entity('signups')
 export class Signup {
+  constructor(email: string, name: string) {
+    const expiresAt = new Date();
+    expiresAt.setUTCMinutes(expiresAt.getUTCMinutes() + 5);
+    this.code = shortid();
+    this.email = email;
+    this.name = name;
+    this.status = Status.Active;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+    this.expiresAt = expiresAt;
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id;
 

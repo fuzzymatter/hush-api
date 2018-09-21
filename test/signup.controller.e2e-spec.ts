@@ -1,13 +1,16 @@
 import request = require('supertest');
 import sinon = require('sinon');
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { Connection, createConnection } from 'typeorm';
+import { INestApplication, HttpStatus } from '@nestjs/common';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Connection, createConnection, Repository } from 'typeorm';
 import { Chance } from 'chance';
 import { AppModule } from '../src/app.module';
 import { MailerService } from '../src/mailer/mailer.service';
 import { ConfigService } from '../src/config/config.service';
 import { SignupService } from '../src/signup/signup.service';
+import { Status, Signup } from '../src/signup/signup.entity';
+import { SignupController } from '../src/signup/signup.controller';
 
 const chance = new Chance();
 const configService = new ConfigService('.env');
@@ -55,6 +58,14 @@ describe('SignupController (e2e)', () => {
   afterEach(async () => {
     await connection.synchronize(true);
     jest.resetAllMocks();
+  });
+
+  it('should be defined', () => {
+    const controller: SignupController = moduleFixture.get<SignupController>(
+      SignupController,
+    );
+
+    expect(controller).toBeDefined();
   });
 
   describe('/signups (POST)', () => {
@@ -105,24 +116,33 @@ describe('SignupController (e2e)', () => {
           });
         });
     });
-  });
 
-  describe('/signups/:id/verify (POST)', async () => {
-    it('404', async () => {
-      jest.spyOn(mailerService, 'send').mockImplementation(() => {});
+    it('should respond with a 409 and error message if email is already verified', async () => {
+      jest.spyOn(mailerService, 'send').mockImplementation(async () => {});
       const signupService = moduleFixture.get<SignupService>(SignupService);
+      const signupRepository = moduleFixture.get<Repository<Signup>>(
+        getRepositoryToken(Signup),
+      );
 
       const { signup } = await signupService.create(
         chance.email(),
         chance.name(),
       );
 
-      await request(app.getHttpServer())
-        .post(`/signups/${signup.id}/verify`)
+      signup.status = Status.Verified;
+      await signupRepository.save(signup);
+
+      return request(app.getHttpServer())
+        .post('/signups')
         .send({
-          code: signup.code,
+          email: signup.email,
+          name: signup.name,
         })
-        .expect(200);
+        .expect(409)
+        .then(({ body }) => {
+          expect(body.message).toMatch(new RegExp(`${signup.email}`, 'gi'));
+          expect(body.statusCode).toBe(HttpStatus.CONFLICT);
+        });
     });
   });
 });

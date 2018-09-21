@@ -13,6 +13,6 @@
     "outDir": "./dist",
     "baseUrl": "./src"
   },
-  "include": ["src/**/*", "scripts/**/*", "test/signup.e2e-spec.ts"],
+  "include": ["src/**/*", "scripts/**/*", "test/**.e2e-spec.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

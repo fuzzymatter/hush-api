@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DateTime } from 'luxon';
 import { Chance } from 'chance';
+import cuid from 'cuid';
 import { SignupService } from './signup.service';
 import { MailerService, MessageData } from '../mailer/mailer.service';
 import { Signup, Status } from './signup.entity';
@@ -9,6 +10,7 @@ import { Signup, Status } from './signup.entity';
 const chance = new Chance();
 
 describe('SignupService', () => {
+  let module: TestingModule;
   let service: SignupService;
 
   const mailerMock = {
@@ -27,7 +29,7 @@ describe('SignupService', () => {
   }));
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         SignupService,
         {
@@ -56,6 +58,8 @@ describe('SignupService', () => {
     const email = chance.email();
     const name = chance.name();
 
+    jest.spyOn(service, 'findVerified').mockResolvedValue(null);
+    jest.spyOn(service, 'findExistingActive').mockResolvedValue(null);
     const { isNew, signup } = await service.create(email, name);
 
     expect(isNew).toBe(true);
@@ -71,6 +75,37 @@ describe('SignupService', () => {
         .diff(DateTime.fromJSDate(new Date()), 'minutes')
         .toObject().minutes,
     ).toBeCloseTo(5);
+  });
+
+  it('should return existing active signup', async () => {
+    const email = chance.email();
+    const name = chance.name();
+
+    const existing = new Signup(email, name);
+    existing.id = cuid();
+
+    jest.spyOn(service, 'findVerified').mockResolvedValue(null);
+    jest.spyOn(service, 'findExistingActive').mockResolvedValue(existing);
+    const { isNew, signup } = await service.create(email, name);
+
+    expect(isNew).toBe(false);
+    expect(signup).toMatchObject(existing);
+  });
+
+  it('should return existing verified signup', async () => {
+    const email = chance.email();
+    const name = chance.name();
+
+    const verified = new Signup(email, name);
+    verified.id = cuid();
+    verified.status = Status.Verified;
+
+    jest.spyOn(service, 'findVerified').mockResolvedValue(verified);
+    jest.spyOn(service, 'findExistingActive').mockResolvedValue(null);
+    const { isNew, signup } = await service.create(email, name);
+
+    expect(isNew).toBe(false);
+    expect(signup).toMatchObject(verified);
   });
 
   it('should throw an exception if the mailer fails', async () => {

@@ -6,10 +6,12 @@ import {
   ValidationPipe,
   HttpStatus,
   Res,
+  ConflictException,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { CreateSignupDto } from './dto/create-signup.dto';
 import { SignupService } from './signup.service';
-import { Response } from 'express';
+import { Status } from './signup.entity';
 
 @Controller('signups')
 export class SignupController {
@@ -21,6 +23,12 @@ export class SignupController {
     return this.signupService
       .create(createSignupDto.email, createSignupDto.name)
       .then(({ isNew, signup }) => {
+        if (signup.status === Status.Verified) {
+          throw new ConflictException(
+            `Email "${signup.email}" has already been verified.`,
+          );
+        }
+
         res.status(isNew ? HttpStatus.CREATED : HttpStatus.OK).json({
           id: signup.id,
           timeRemaining: signup.timeRemaining,
