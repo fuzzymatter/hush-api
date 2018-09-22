@@ -9,5 +9,6 @@ import { Signup } from './signup.entity';
   imports: [TypeOrmModule.forFeature([Signup]), MailerModule],
   controllers: [SignupController],
   providers: [SignupService],
+  exports: [SignupService],
 })
 export class SignupsModule {}

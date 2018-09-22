@@ -4,6 +4,7 @@ import { SignupsModule } from './signup/signup.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { VerifiedSignupModule } from './verified-signup/verified-signup.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConfigService } from './config/config.service';
     }),
     SignupsModule,
     MailerModule,
+    VerifiedSignupModule,
   ],
 })
 export class AppModule {}

@@ -42,12 +42,26 @@ Request body
 }
 ```
 
-`POST /signups/:id/verify` - Complete sign up with verification code
+Responses include:
+
+- `400 BadRequest`
+- `409 Conflict` if active signup for `email` exists
+- `201` if successful
+
+`POST /verified-signups` - Complete sign up with verification code
 
 ```javascript
 {
+  signupId: string,
   code: string,
   publicKey: string,
   privateKey: string,
 }
 ```
+
+Responses include:
+
+- `400 BadRequest`
+- `404 NotFound`
+- `409 Conflict` if signup is already verified
+- `201` if successful

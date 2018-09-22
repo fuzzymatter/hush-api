@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DateTime } from 'luxon';
 import { Chance } from 'chance';
-import cuid from 'cuid';
+import uuid from 'uuid';
 import { SignupService } from './signup.service';
 import { MailerService, MessageData } from '../mailer/mailer.service';
 import { Signup, Status } from './signup.entity';
@@ -82,7 +82,7 @@ describe('SignupService', () => {
     const name = chance.name();
 
     const existing = new Signup(email, name);
-    existing.id = cuid();
+    existing.id = uuid.v4();
 
     jest.spyOn(service, 'findVerified').mockResolvedValue(null);
     jest.spyOn(service, 'findExistingActive').mockResolvedValue(existing);
@@ -97,7 +97,7 @@ describe('SignupService', () => {
     const name = chance.name();
 
     const verified = new Signup(email, name);
-    verified.id = cuid();
+    verified.id = uuid.v4();
     verified.status = Status.Verified;
 
     jest.spyOn(service, 'findVerified').mockResolvedValue(verified);
