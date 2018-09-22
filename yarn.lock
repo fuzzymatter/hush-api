@@ -16,7 +16,7 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@nestjs/common@^5.3.7":
+"@nestjs/common@^5.0.0", "@nestjs/common@^5.3.7":
   version "5.3.7"
   resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.3.7.tgz#862db9a4c34ad2adc467815fca72d27353953b6d"
   dependencies:
@@ -26,7 +26,7 @@
     multer "1.3.0"
     uuid "3.3.2"
 
-"@nestjs/core@^5.3.7":
+"@nestjs/core@^5.0.0", "@nestjs/core@^5.3.7":
   version "5.3.7"
   resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-5.3.7.tgz#7fbd12742c01df1cfccfcaa816bda61e187c5649"
   dependencies:
@@ -39,6 +39,17 @@
     optional "0.1.4"
     path-to-regexp "2.2.1"
     uuid "3.3.2"
+
+"@nestjs/swagger@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-2.5.1.tgz#f05e96ee82fa2b6b9c5a508b55bb0162fa025068"
+  dependencies:
+    lodash "^4.17.4"
+    path-to-regexp "^2.2.1"
+    swagger-ui-express "^3.0.8"
+  optionalDependencies:
+    "@nestjs/common" "^5.0.0"
+    "@nestjs/core" "^5.0.0"
 
 "@nestjs/testing@^5.3.7":
   version "5.3.7"
@@ -4095,6 +4106,10 @@ path-to-regexp@^1.7.0:
   dependencies:
     isarray "0.0.1"
 
+path-to-regexp@^2.2.1:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-2.4.0.tgz#35ce7f333d5616f1c1e1bfe266c3aba2e5b2e704"
+
 path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
@@ -5082,6 +5097,10 @@ supports-color@^5.2.0, supports-color@^5.3.0, supports-color@^5.4.0, supports-co
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
   dependencies:
     has-flag "^3.0.0"
+
+swagger-ui-express@^3.0.8:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-3.0.10.tgz#c72b32107a57a47913f3b46003e8fd62a7378ea2"
 
 symbol-tree@^3.2.2:
   version "3.2.2"

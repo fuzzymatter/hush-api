@@ -29,39 +29,4 @@ To create the application databases run `yarn scripts:db:init`.
 
 ## Routes
 
-`POST /signups` - Create new signup
-
-Expires in 5 minutes.
-
-Request body
-
-```javascript
-{
-  email: string,
-  name: string,
-}
-```
-
-Responses include:
-
-- `400 BadRequest`
-- `409 Conflict` if active signup for `email` exists
-- `201` if successful
-
-`POST /verified-signups` - Complete sign up with verification code
-
-```javascript
-{
-  signupId: string,
-  code: string,
-  publicKey: string,
-  privateKey: string,
-}
-```
-
-Responses include:
-
-- `400 BadRequest`
-- `404 NotFound`
-- `409 Conflict` if signup is already verified
-- `201` if successful
+Visit `https://host:port/api` for Swagger docs.
