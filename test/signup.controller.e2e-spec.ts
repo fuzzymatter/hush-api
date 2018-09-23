@@ -1,9 +1,9 @@
 import request = require('supertest');
-import sinon = require('sinon');
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Connection, createConnection, Repository } from 'typeorm';
+import { DateTime } from 'luxon';
 import { Chance } from 'chance';
 import { AppModule } from '../src/app.module';
 import { MailerService } from '../src/mailer/mailer.service';
@@ -80,13 +80,8 @@ describe('SignupController (e2e)', () => {
         })
         .expect(201)
         .then(({ body }) => {
-          sinon.assert.match(body, {
-            id: sinon.match(/.{20,}/),
-            timeRemaining: sinon.match({
-              minutes: sinon.match.number,
-              seconds: sinon.match.number,
-            }),
-          });
+          expect(DateTime.fromISO(body.expiresAt).isValid).toBe(true);
+          expect(body.id).toMatch(/.{20,}/);
         });
     });
 
@@ -107,13 +102,8 @@ describe('SignupController (e2e)', () => {
         })
         .expect(200)
         .then(({ body }) => {
-          sinon.assert.match(body, {
-            id: sinon.match(/.{20,}/),
-            timeRemaining: sinon.match({
-              minutes: sinon.match.number,
-              seconds: sinon.match.number,
-            }),
-          });
+          expect(DateTime.fromISO(body.expiresAt).isValid).toBe(true);
+          expect(body.id).toMatch(/.{20,}/);
         });
     });
 

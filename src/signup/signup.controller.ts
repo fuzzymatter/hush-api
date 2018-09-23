@@ -55,7 +55,7 @@ export class SignupController {
 
         res.status(isNew ? HttpStatus.CREATED : HttpStatus.OK).json({
           id: signup.id,
-          timeRemaining: signup.timeRemaining,
+          expiresAt: signup.expiresAt,
         });
       });
   }

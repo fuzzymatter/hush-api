@@ -58,15 +58,4 @@ export class Signup {
   get isExpired(): boolean {
     return this.expiresAt < new Date();
   }
-
-  get timeRemaining() {
-    const diff = DateTime.fromJSDate(this.expiresAt)
-      .diff(DateTime.fromJSDate(new Date()), ['minutes', 'seconds'])
-      .toObject();
-
-    return {
-      minutes: diff.minutes,
-      seconds: diff.seconds,
-    };
-  }
 }

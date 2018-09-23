@@ -29,9 +29,9 @@ export class SignupService {
     }
 
     const signup = new Signup(email, name);
-    const text = `Hello ${
+    const text = `Hi ${
       signup.name
-    },\n\nHere is your signup verification code: ${signup.code}.`;
+    },\n\nhere is your signup verification code: ${signup.code}.`;
     const html = `Hello ${
       signup.name
     },\n\nHere is your signup verification code: <strong>${
