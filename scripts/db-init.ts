@@ -36,4 +36,4 @@ async function main() {
   await connection.close();
 }
 
-main();
+main().catch(console.error); // tslint:disable-line
