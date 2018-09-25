@@ -3,7 +3,7 @@ import { createConnection } from 'typeorm';
 async function main() {
   const connection = await createConnection({
     type: 'postgres',
-    host: 'localhost',
+    host: process.env.TYPEORM_HOST || 'localhost',
     port: 5432,
     username: 'postgres',
     password: 'postgres',
