@@ -5,6 +5,7 @@
   "author": "Jake Klassen",
   "license": "MIT",
   "scripts": {
+    "build:env": "ts-node scripts/write-env.ts",
     "db:init": "ts-node scripts/db-init.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",

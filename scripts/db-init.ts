@@ -1,14 +1,16 @@
 import { createConnection } from 'typeorm';
+import { ConfigService } from '../src/config/config.service';
 
 async function main() {
+  const config = new ConfigService('.env');
   const connection = await createConnection({
-    type: 'postgres',
-    host: process.env.TYPEORM_HOST || 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'postgres',
-    database: 'postgres',
-    synchronize: true,
+    type: config.env.TYPEORM_CONNECTION,
+    host: config.env.TYPEORM_HOST,
+    port: config.env.TYPEORM_PORT,
+    username: config.env.TYPEORM_USERNAME,
+    password: config.env.TYPEORM_PASSWORD,
+    database: config.env.TYPEORM_DATABASE,
+    synchronize: config.env.TYPEORM_SYNCHRONIZE,
   });
 
   const dbs: { datname: string }[] = await connection.query(
