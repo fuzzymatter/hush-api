@@ -10,12 +10,13 @@ import {
 import { Chance } from 'chance';
 import uuid from 'uuid';
 import shortid from 'shortid';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AppModule } from '../src/app.module';
 import { ConfigService } from '../src/config/config.service';
 import { SignupService } from '../src/signup/signup.service';
 import { Status, Signup } from '../src/signup/signup.entity';
 import { VerifiedSignupController } from '../src/verified-signup/verified-signup.controller';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { MailerService } from '../src/mailer/mailer.service';
 
 const chance = new Chance();
 const configService = new ConfigService('.env');
@@ -42,6 +43,8 @@ describe('VerifiedSignupController (e2e)', () => {
     })
       .overrideProvider(Connection)
       .useValue(connection)
+      .overrideProvider(MailerService)
+      .useValue({ async send() {} })
       .compile();
 
     app = moduleFixture.createNestApplication();

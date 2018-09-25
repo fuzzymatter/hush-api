@@ -1,5 +1,7 @@
 ## Description
 
+[![pipeline status](https://gitlab.com/fuzzymatter/hush-api/badges/master/pipeline.svg)](https://gitlab.com/fuzzymatter/hush-api/commits/master)
+
 Hush service api project.
 
 ## Development

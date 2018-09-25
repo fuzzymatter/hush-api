@@ -1,0 +1,32 @@
+# Order of operations
+stages:
+  - test
+
+test:
+  stage: test
+  image: node:8.12.0-alpine
+  cache:
+    paths:
+      - node_modules
+  services:
+    - postgres:10.5
+  variables:
+    CI: 'true'
+    SENDGRID_API_KEY: 'sendgrid_api_key'
+    TYPEORM_CONNECTION: 'postgres'
+    TYPEORM_HOST: 'postgres'
+    TYPEORM_PORT: '5432'
+    TYPEORM_USERNAME: 'postgres'
+    TYPEORM_PASSWORD: 'postgres'
+    TYPEORM_DATABASE: 'postgres'
+    TYPEORM_SYNCHRONIZE: 'true'
+    TYPEORM_LOGGING: 'true'
+    TYPEORM_ENTITIES: 'src/**/**.entity.ts,src/**/**.entity.js'
+    NODE_ENV: 'test'
+    PORT: '3000'
+  script:
+    - yarn
+    - yarn build:env
+    - yarn db:init
+    - yarn test
+    - yarn test:e2e
