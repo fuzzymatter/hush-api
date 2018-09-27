@@ -29,4 +29,12 @@ export class CreateVerifiedSignupDto {
     required: true,
   })
   readonly privateKey: string;
+
+  @IsString()
+  @ApiModelProperty({
+    description:
+      'Device name that will be attached to the authenication token.',
+    required: true,
+  })
+  readonly deviceName: string;
 }
